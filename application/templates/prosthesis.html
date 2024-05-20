@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="post">
+        <fieldset>
+        {{ form.prosthesis_type.label }} {{ form.prosthesis_type() }}
+        <div>
+            {{ form.checkbox.label }} {{ form.checkbox() }}
+            {{ form.date.label }} {{ form.date() }}            
+        </div>
+        <div>
+            <h4>Has it been resent?</h4> 
+            {{ form.checkbox.label }} {{ form.checkbox() }} 
+            {{ form.date.label }} {{ form.date() }}            
+        </div>
+        <div>
+            {{ form.checkbox.label }} {{ form.checkbox() }}
+            {{ form.date.label }} {{ form.date() }}            
+        </div>
+
+        {{ form.submit() }}            
+        </fieldset>
+    </form>
+    
+</body>
+</html>
