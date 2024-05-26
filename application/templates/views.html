@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Dental Prostheses</h1>
+    <div>
+    {% for prosthesis in prostheses %}
+       <h3>Prosthesis Type: </h3> {{ prosthesis.name }}
+        <h3>Completed? </h3>{{ prosthesis.list }} 
+        <h3>Date:</h3> {{ prosthesis.selected_date }} 
+    {% endfor %}
+    </div>
+
+</body>
+</html>

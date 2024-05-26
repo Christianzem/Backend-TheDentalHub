@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect
 from flask_pymongo import PyMongo
 from pymongo.errors import PyMongoError
 import os
@@ -29,9 +29,11 @@ except Exception as e:
 db = mongo_client.db
 print(db) #
 # Routing using decorators
-@app.route("/home")
-def hello():
-    return "<h1>Home Page</h1>"
+@app.route("/details")
+def patientDetails():
+    prosthesis_cursor = db.Prostheses.find()
+    prosthesis_list = list(prosthesis_cursor)
+    return render_template("views.html", prostheses=prosthesis_list)
 
 @app.route("/add_Prosthesis", methods=["POST", "GET"])
 def prosthesis():
@@ -56,7 +58,7 @@ def prosthesis():
         
         print(selected_date)
         flash("Dental Prosthesis Added", "success")
-        return "/home"
+        return redirect("/details")
 
     else:
         form = DentalProsthesis()
