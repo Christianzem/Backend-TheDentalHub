@@ -1,11 +1,53 @@
 from application import app
 from application import db
-from flask import render_template, request, redirect, flash
+from application import bcrypt
+from flask import render_template, request, redirect, flash, url_for, session
 import datetime
 from .Prostheses import DentalProsthesis 
+from .User import RegisterForm, LoginForm
 from bson import ObjectId
 
-# Routing using decorators
+
+# Routing ----- User -----
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegisterForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+        # Process the form data (e.g., save user to database)
+            email = form.email.data
+            hashed_password = bcrypt.generate_password_hash(form.password.data) 
+
+            db.User.insert_one({
+                "Email": email,
+                "Password": hashed_password,
+            })
+
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('login'))  # Redirect to login page after successful signup
+    return render_template('signup.html', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        email = form.email.data
+        # Check if the user exists in the database
+        user = db.User.find_one({"Email": email})
+        if user:
+            # Verify the password
+            if bcrypt.check_password_hash(user['Password'], form.password.data):
+                # Log the user in
+                session['user_id'] = str(user['_id'])  # Assuming _id is a BSON object
+                flash('Login successful!', 'success')
+                return redirect('/details')
+        flash('Invalid email or password. Please try again.', 'error')
+
+    return render_template('login.html', form=form)
+
+
+
+# Routing using decorators ----- Prosthesis -----
 @app.route("/details")
 def patientDetails():
     prosthesis_cursor = db.Prostheses.find()
@@ -25,7 +67,6 @@ def prosthesis():
         # Convert selected_date to a datetime.datetime object with midnight time
         selected_datetime = datetime.datetime.combine(selected_date, datetime.time.min)
 
-        print(selected_date)
 
         db.Prostheses.insert_one({
             "name": prosthesis_type,
@@ -33,7 +74,6 @@ def prosthesis():
             "selected_date": selected_datetime
             })
         
-        print(selected_date)
         flash("Dental Prosthesis Added", "success")
         return redirect("/details")
 

@@ -5,12 +5,15 @@ import os
 # import datetime
 # from Prostheses import DentalProsthesis  # Import the form class
 from dotenv import load_dotenv
+from flask_bcrypt import Bcrypt
 
 load_dotenv()
 
 app = Flask(__name__)
 # Assignment of secret key inside of my .env
 app.secret_key = os.environ.get("SECRET_KEY")
+# Assigning Bcrypt
+bcrypt = Bcrypt(app)
 
 # Connect to MongoDB
 mongo_uri = os.getenv("MONGODB_URI") # Assignment of my URI inside of my .env
