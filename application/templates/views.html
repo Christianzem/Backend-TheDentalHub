@@ -12,6 +12,8 @@
        <h3>Prosthesis Type: </h3> {{ prosthesis.name }}
         <h3>Completed? </h3>{{ prosthesis.list }} 
         <h3>Date:</h3> {{ prosthesis.selected_date }} 
+        <a href="{{ url_for( 'update_Prosthesis', id = prosthesis._id ) }}">Update</a>
+        <a href="{{ url_for( 'delete_Prosthesis', id = prosthesis._id ) }}">Delete</a>
     {% endfor %}
     </div>
 
