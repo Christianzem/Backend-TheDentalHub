@@ -6,6 +6,7 @@ import os
 # from Prostheses import DentalProsthesis  # Import the form class
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -14,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 # Assigning Bcrypt
 bcrypt = Bcrypt(app)
+CORS(app)
 
 # Connect to MongoDB
 mongo_uri = os.getenv("MONGODB_URI") # Assignment of my URI inside of my .env

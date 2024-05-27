@@ -10,8 +10,14 @@
     <div>
     {% for prosthesis in prostheses %}
        <h3>Prosthesis Type: </h3> {{ prosthesis.name }}
-        <h3>Completed? </h3>{{ prosthesis.list }} 
-        <h3>Date:</h3> {{ prosthesis.selected_date }} 
+        <h3>Is it sent to the lab? </h3>{{ prosthesis.lab }} 
+        <h3>Date:</h3> {{ prosthesis.selected_date1 }} 
+        <h3>Has it arrived? </h3>{{ prosthesis.arrival }} 
+        <h3>Date:</h3> {{ prosthesis.selected_date2 }}
+        <h3>Is it resent to the lab? </h3>{{ prosthesis.resent }} 
+        <h3>Date:</h3> {{ prosthesis.selected_date3 }}
+        <h3>Was it delivered? </h3>{{ prosthesis.delivered }} 
+        <h3>Date:</h3> {{ prosthesis.selected_date4 }}   
         <a href="{{ url_for( 'update_Prosthesis', id = prosthesis._id ) }}">Update</a>
         <a href="{{ url_for( 'delete_Prosthesis', id = prosthesis._id ) }}">Delete</a>
     {% endfor %}

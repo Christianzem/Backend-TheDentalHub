@@ -11,18 +11,22 @@
         <fieldset>
         {{ form.prosthesis_type.label }} {{ form.prosthesis_type() }}
         <div>
-            {{ form.checkbox.label }} {{ form.checkbox() }}
-            {{ form.selected_date.label }} {{ form.selected_date() }}            
-        </div>
-        <!-- <div>
-            <h4>Has it been resent?</h4> 
-            {{ form.checkbox.label }} {{ form.checkbox() }} 
-            {{ form.selected_date.label }} {{ form.selected_date() }}            
+            {{ form.checkbox1.label }} {{ form.checkbox1() }}
+            {{ form.selected_date1.label }} {{ form.selected_date1() }}            
         </div>
         <div>
-            {{ form.checkbox.label }} {{ form.checkbox() }}
-            {{ form.selected_date.label }} {{ form.selected_date() }}            
-        </div> -->
+            <h4>Has it been resent?</h4> 
+            {{ form.checkbox2.label }} {{ form.checkbox2() }} 
+            {{ form.selected_date2.label }} {{ form.selected_date2() }}            
+        </div>
+        <div>
+            {{ form.checkbox3.label }} {{ form.checkbox3() }}
+            {{ form.selected_date3.label }} {{ form.selected_date3() }}            
+        </div>
+        <div>
+            {{ form.checkbox4.label }} {{ form.checkbox4() }}
+            {{ form.selected_date4.label }} {{ form.selected_date4() }}            
+        </div>
 
         {{ form.submit() }}          
         </fieldset>
