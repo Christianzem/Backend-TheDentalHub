@@ -5,6 +5,7 @@ from flask import render_template, request, redirect, flash, url_for, session, j
 import datetime
 from .Prostheses import DentalProsthesis 
 from .User import RegisterForm, LoginForm
+from .Patient import PatientForm
 from bson import ObjectId
 
 
@@ -195,3 +196,67 @@ def update_Prosthesis(id):
             return redirect("/prosthesis")  # Redirect to details page if prosthesis not found
 
     return render_template("prosthesis.html", form=form)
+
+# Routing ---- Patient -----
+
+@app.route("/patients")
+def patients():
+    patient_cursor = db.Patient.find()
+    patient_list = [
+        {
+            '_id': str(patient.get('_id')),
+            'first_name': patient.get('first_name'),
+            'last_name': patient.get('last_name'),
+            'birth_date': patient.get('birth_date'),
+            'patient_number': patient.get('patient_number'),
+        }
+        for patient in patient_cursor
+    ]
+    return jsonify(patient=patient_list)
+
+@app.route("/add_patient", methods=["POST", "GET"])
+def patient():
+    if request.method == "POST":
+        form = PatientForm(request.form)
+
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        birth_date = form.birth_date.data
+        date_birth = datetime.datetime.combine(birth_date, datetime.time.min)
+        patient_number = form.patient_number.data
+
+        db.Patient.insert_one({
+            "first_name" : first_name,
+            "last_name": last_name,
+            "birth_date": date_birth,
+            "patient_number": patient_number
+        })
+
+        flash("Dental Patient Added", "Success")
+        return jsonify(status="success", message="Dental Patient Added successfully")
+    
+@app.route("/delete_patient/<id>")
+def delete_patient(id):
+    db.Patient.find_one_and_delete({"_id": ObjectId(id)})
+    return jsonify(status="Success", message="Dental Patient Deleted")
+
+@app.route("/update_patient/<id>", methods=["POST", "GET"])
+def update_patient(id):
+    if request.method == "POST":
+        form = PatientForm(request.form)
+
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        birth_date = form.birth_date.data
+        date_birth = datetime.datetime.combine(birth_date, datetime.time.min)
+        patient_number = form.patient_number.data
+    
+        db.Patient.find_one_and_update({"_id": ObjectId(id)},{"$set": {
+            "first_name" : first_name,
+            "last_name": last_name,
+            "birth_date": date_birth,
+            "patient_number": patient_number
+        }})
+
+        return jsonify(status="success", message="Dental Patient Updated")
+    
