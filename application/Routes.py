@@ -51,14 +51,25 @@ def login():
 @app.route("/prosthesis")
 def patientDetails():
     prosthesis_cursor = db.Prostheses.find()
-    prosthesis_list = list(prosthesis_cursor)
+    # prosthesis_list = list(prosthesis_cursor)
         # Convert ObjectId objects to strings
-    # prosthesis_list = [
-    #     {**prosthesis, '_id': str(prosthesis.get('_id'))}  # Convert _id to string
-    #     for prosthesis in prosthesis_cursor
-    # ]
-    # return jsonify(prostheses=prosthesis_list)
-    return render_template("views.html", prostheses=prosthesis_list)
+    prosthesis_list = [
+        {
+            '_id': str(prosthesis.get('_id')),
+            'name': prosthesis.get('name'),
+            'lab': prosthesis.get('lab'),
+            'arrival': prosthesis.get('arrival'),
+            'resent': prosthesis.get('resent'),
+            'delivered': prosthesis.get('delivered'),
+            'selected_date1': prosthesis.get('selected_date1'),
+            'selected_date2': prosthesis.get('selected_date2'),
+            'selected_date3': prosthesis.get('selected_date3'),
+            'selected_date4': prosthesis.get('selected_date4')
+        }
+        for prosthesis in prosthesis_cursor
+    ]
+    return jsonify(prostheses=prosthesis_list)
+    # return render_template("views.html", prostheses=prosthesis_list)
 
 @app.route("/add_Prosthesis", methods=["POST", "GET"])
 def prosthesis():
