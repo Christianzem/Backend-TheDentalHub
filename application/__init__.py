@@ -11,11 +11,11 @@ from flask_cors import CORS
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 # Assignment of secret key inside of my .env
 app.secret_key = os.environ.get("SECRET_KEY")
 # Assigning Bcrypt
 bcrypt = Bcrypt(app)
-CORS(app)
 
 # Connect to MongoDB
 mongo_uri = os.getenv("MONGODB_URI") # Assignment of my URI inside of my .env
