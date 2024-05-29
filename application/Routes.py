@@ -45,16 +45,6 @@ def login():
 
     return jsonify({'access_token': access_token}), 200
 
-# Protected route that requires JWT authentication
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    # Get the identity (email) of the authenticated user from the JWT token
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
-
-
 # Routing using decorators ----- Prosthesis -----
 @app.route("/prosthesis")
 def patientDetails():
@@ -77,7 +67,20 @@ def patientDetails():
         for prosthesis in prosthesis_cursor
     ]
     return jsonify(prostheses=prosthesis_list)
-    # return render_template("views.html", prostheses=prosthesis_list)
+
+# @app.route("/patients/<patient_id>/prostheses", methods=["GET"])
+# def get_patient_prostheses(patient_id):
+#     # Check if the patient exists
+#     patient = db.Patient.find_one({"_id": ObjectId(patient_id)})
+#     if patient:
+#         # Retrieve all prosthesis associated with the patient's ObjectId
+#         prostheses = list(db.Prostheses.find({"patient_id": patient_id}))
+#         # Convert ObjectId to string for JSON serialization
+#         for prosthesis in prostheses:
+#             prosthesis["_id"] = str(prosthesis["_id"])
+#         return jsonify(status="success", prostheses=prostheses)
+#     else:
+#         return jsonify(status="error", message="Patient not found"), 404
 
 @app.route("/prosthesis/<id>")
 def get_prosthesis(id):
@@ -133,55 +136,7 @@ def prosthesis():
             return jsonify(status="success", message="Dental Prosthesis Added successfully")
         else:
             return jsonify(status="error", message="No data received"), 400 #Bad Request
-    #     form = DentalProsthesis(request.form)
 
-    #     prosthesis_type = form.prosthesis_type.data
-    #     checkbox1 = form.checkbox1.data
-    #     checkbox2 = form.checkbox2.data
-    #     checkbox3 = form.checkbox3.data
-    #     checkbox4 = form.checkbox4.data
-
-    #     selected_date1 = form.selected_date1.data
-    #     # Convert selected_date to a datetime.datetime object with midnight time
-    #     if selected_date1:
-    #         selected_datetime1 = datetime.datetime.combine(selected_date1, datetime.time.min)
-    #     else:
-    #         selected_datetime1 = None
-    #     selected_date2 = form.selected_date2.data
-    #     if selected_date2:
-    #         selected_datetime2 = datetime.datetime.combine(selected_date2, datetime.time.min)
-    #     else:
-    #         selected_datetime2 = None
-    #     selected_date3 = form.selected_date3.data
-    #     if selected_date3:
-    #         selected_datetime3 = datetime.datetime.combine(selected_date3, datetime.time.min)
-    #     else: 
-    #         selected_datetime3 = None
-    #     selected_date4 = form.selected_date4.data
-    #     if selected_date4:
-    #         selected_datetime4 = datetime.datetime.combine(selected_date4, datetime.time.min)
-    #     else:
-    #         selected_datetime4 = None
-
-
-    #     db.Prostheses.insert_one({
-    #         "name": prosthesis_type,
-    #         "lab": checkbox1,
-    #         "arrival": checkbox2,
-    #         "resent": checkbox3,
-    #         "delivered": checkbox4,
-    #         "selected_date1": selected_datetime1,
-    #         "selected_date2": selected_datetime2,
-    #         "selected_date3": selected_datetime3,
-    #         "selected_date4": selected_datetime4
-    #         })
-        
-    #     flash("Dental Prosthesis Added", "success")
-    #     return jsonify(status="success", message="Dental Patient Added successfully")
-
-    # else:
-    #     form = DentalProsthesis()
-    # return render_template("prosthesis.html", form=form)
 
 @app.route("/delete_Prosthesis/<id>", methods = ["DELETE"])
 def delete_Prosthesis(id):
@@ -219,28 +174,7 @@ def update_Prosthesis(id):
             return jsonify(status="success", message="Dental Prosthesis Added successfully")
         else:
             return jsonify(status="error", message="No data received"), 400 #Bad Request
-    #     flash("Dental Prosthesis Updated", "success")
-    #     return redirect("/prosthesis")
-    # else:
-    #     form = DentalProsthesis()
-
-    #     dental_prosthesis = db.Prostheses.find_one({"_id": ObjectId(id)})
-    #     if dental_prosthesis:
-    #         form.prosthesis_type.data = dental_prosthesis.get("name", None)
-    #         form.checkbox1.data = dental_prosthesis.get("lab", None)
-    #         form.checkbox2.data = dental_prosthesis.get("arrived", None)
-    #         form.checkbox3.data = dental_prosthesis.get("resent", None)
-    #         form.checkbox4.data = dental_prosthesis.get("delivered", None)
-    #         form.selected_date1.data = dental_prosthesis.get("selected_date1", None)
-    #         form.selected_date2.data = dental_prosthesis.get("selected_date2", None)
-    #         form.selected_date3.data = dental_prosthesis.get("selected_date3", None)
-    #         form.selected_date4.data = dental_prosthesis.get("selected_date4", None)
-    #     else:
-    #         flash("Prosthesis not found", "error")
-    #         return redirect("/prosthesis")  # Redirect to details page if prosthesis not found
-
-    # return render_template("prosthesis.html", form=form)
-
+ 
 # Routing ---- Patient -----
 
 @app.route("/patients")
@@ -259,6 +193,7 @@ def patients():
         for patient in patient_cursor
     ]
     return jsonify(patient=patient_list)
+
 
 @app.route("/patients/<id>")
 def get_patient(id):

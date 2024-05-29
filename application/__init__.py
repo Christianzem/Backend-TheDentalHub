@@ -21,7 +21,7 @@ bcrypt = Bcrypt(app)
 
 # Connect to MongoDB
 mongo_uri = os.getenv("MONGODB_URI") # Assignment of my URI inside of my .env
-print(os.getenv("MONGODB_URI"))
+# print(os.getenv("MONGODB_URI"))
 try:
     mongo_client = PyMongo(app, uri=mongo_uri)
     if mongo_client.db is None:
