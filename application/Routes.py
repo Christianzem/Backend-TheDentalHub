@@ -3,6 +3,8 @@ from application import db
 from application import bcrypt
 from flask import render_template, request, redirect, flash, url_for, session, jsonify
 import datetime
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask_jwt_extended import  jwt_required, create_access_token, get_jwt_identity
 from .Prostheses import DentalProsthesis 
 from .User import RegisterForm, LoginForm
 from .Patient import PatientForm
@@ -12,39 +14,44 @@ from bson import ObjectId
 # Routing ----- User -----
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm()
-    if request.method == "POST":
-        if form.validate_on_submit():
-        # Process the form data (e.g., save user to database)
-            email = form.email.data
-            hashed_password = bcrypt.generate_password_hash(form.password.data) 
+    email = request.json.get('email')
+    password = request.json.get('password')
 
-            db.User.insert_one({
-                "Email": email,
-                "Password": hashed_password,
-            })
+    # Hash the password before storing it
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-            flash('Account created successfully!', 'success')
-            return redirect(url_for('login'))  # Redirect to login page after successful signup
-    return render_template('signup.html', form=form)
+    # Check if the user already exists
+    if db.users.find_one({'email': email}):
+        return jsonify({'message': 'User already exists'}), 400
+
+    # Insert the new user into the database
+    db.users.insert_one({'email': email, 'password': hashed_password})
+
+    return jsonify({'message': 'User created successfully'}), 201
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        email = form.email.data
-        # Check if the user exists in the database
-        user = db.User.find_one({"Email": email})
-        if user:
-            # Verify the password
-            if bcrypt.check_password_hash(user['Password'], form.password.data):
-                # Log the user in
-                session['user_id'] = str(user['_id'])  # Assuming _id is a BSON object
-                flash('Login successful!', 'success')
-                return redirect('/prosthesis')
-        flash('Invalid email or password. Please try again.', 'error')
+    email = request.json.get('email')
+    password = request.json.get('password')
 
-    return render_template('login.html', form=form)
+    # Check if the user exists in the database
+    user = db.users.find_one({'email': email})
+    if not user or not bcrypt.check_password_hash(user['password'], password):
+        return jsonify({'message': 'Invalid email or password'}), 401
+
+    # Generate JWT token for the authenticated user
+    access_token = create_access_token(identity=email)
+
+    return jsonify({'access_token': access_token}), 200
+
+# Protected route that requires JWT authentication
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    # Get the identity (email) of the authenticated user from the JWT token
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 
 
@@ -179,10 +186,9 @@ def prosthesis():
 @app.route("/delete_Prosthesis/<id>", methods = ["DELETE"])
 def delete_Prosthesis(id):
     db.Prostheses.find_one_and_delete({"_id": ObjectId(id)})
-    flash("Prosthesis successfully deleted", "success")
-    return redirect("/prosthesis")
+    return jsonify(status="success", message="Dental Prosthesis Deleted successfully")
 
-@app.route("/update_Prosthesis/<id>", methods=["POST", "GET"])
+@app.route("/update_Prosthesis/<id>", methods=["POST", "GET", "PUT"])
 def update_Prosthesis(id):
         data = request.json  # Access JSON data sent from frontend
         if data:

@@ -7,11 +7,13 @@ import os
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+jwt = JWTManager(app)
 # Assignment of secret key inside of my .env
 app.secret_key = os.environ.get("SECRET_KEY")
 # Assigning Bcrypt
