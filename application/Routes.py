@@ -11,9 +11,9 @@ from .Patient import PatientForm
 from bson import ObjectId
 
 # HEROKU Routing 
-@app.route("/")
-def HEROKU():
-    return "HEROKU DEPLOYMENT"
+# @app.route("/")
+# def HEROKU():
+#     return "HEROKU DEPLOYMENT"
 
 # Routing ----- User -----
 @app.route('/signup', methods=['GET', 'POST'])
