@@ -50,41 +50,41 @@ def login():
     return jsonify({'access_token': access_token}), 200
 
 # Routing using decorators ----- Prosthesis -----
-@app.route("/prosthesis")
-def patientDetails():
-    prosthesis_cursor = db.Prostheses.find()
-    # prosthesis_list = list(prosthesis_cursor)
-        # Convert ObjectId objects to strings
-    prosthesis_list = [
-        {
-            '_id': str(prosthesis.get('_id')),
-            'name': prosthesis.get('name'),
-            'lab': prosthesis.get('lab'),
-            'arrival': prosthesis.get('arrival'),
-            'resent': prosthesis.get('resent'),
-            'delivered': prosthesis.get('delivered'),
-            'selected_date1': prosthesis.get('selected_date1'),
-            'selected_date2': prosthesis.get('selected_date2'),
-            'selected_date3': prosthesis.get('selected_date3'),
-            'selected_date4': prosthesis.get('selected_date4')
-        }
-        for prosthesis in prosthesis_cursor
-    ]
-    return jsonify(prostheses=prosthesis_list)
+# @app.route("/prosthesis")
+# def patientDetails():
+#     prosthesis_cursor = db.Prostheses.find()
+#     # prosthesis_list = list(prosthesis_cursor)
+#         # Convert ObjectId objects to strings
+#     prosthesis_list = [
+#         {
+#             '_id': str(prosthesis.get('_id')),
+#             'name': prosthesis.get('name'),
+#             'lab': prosthesis.get('lab'),
+#             'arrival': prosthesis.get('arrival'),
+#             'resent': prosthesis.get('resent'),
+#             'delivered': prosthesis.get('delivered'),
+#             'selected_date1': prosthesis.get('selected_date1'),
+#             'selected_date2': prosthesis.get('selected_date2'),
+#             'selected_date3': prosthesis.get('selected_date3'),
+#             'selected_date4': prosthesis.get('selected_date4')
+#         }
+#         for prosthesis in prosthesis_cursor
+#     ]
+#     return jsonify(prostheses=prosthesis_list)
 
-# @app.route("/patients/<patient_id>/prostheses", methods=["GET"])
-# def get_patient_prostheses(patient_id):
-#     # Check if the patient exists
-#     patient = db.Patient.find_one({"_id": ObjectId(patient_id)})
-#     if patient:
-#         # Retrieve all prosthesis associated with the patient's ObjectId
-#         prostheses = list(db.Prostheses.find({"patient_id": patient_id}))
-#         # Convert ObjectId to string for JSON serialization
-#         for prosthesis in prostheses:
-#             prosthesis["_id"] = str(prosthesis["_id"])
-#         return jsonify(status="success", prostheses=prostheses)
-#     else:
-#         return jsonify(status="error", message="Patient not found"), 404
+@app.route("/patients/<patient_id>/prostheses", methods=["GET"])
+def get_patient_prostheses(patient_id):
+    # Check if the patient exists
+    patient = db.Patient.find_one({"_id": ObjectId(patient_id)})
+    if patient:
+        # Retrieve all prosthesis associated with the patient's ObjectId
+        prostheses = list(db.Prostheses.find({"patient_id": patient_id}))
+        # Convert ObjectId to string for JSON serialization
+        for prosthesis in prostheses:
+            prosthesis["_id"] = str(prosthesis["_id"])
+        return jsonify(status="success", prostheses=prostheses)
+    else:
+        return jsonify(status="error", message="Patient not found"), 404
 
 @app.route("/prosthesis/<id>")
 def get_prosthesis(id):
