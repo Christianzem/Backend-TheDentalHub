@@ -107,39 +107,78 @@ def get_prosthesis(id):
         return jsonify(error="Prosthesis not found"), 404
 
 @app.route("/add_Prosthesis", methods=["POST"])
-def prosthesis():
-        data = request.json  # Access JSON data sent from frontend
-        if data:
+def add_prosthesis():
+    data = request.json  # Access JSON data sent from frontend
+    if data:
+        # Extract data from the request
+        prosthesis_type = data.get('prosthesis_type')
+        checkbox1 = data.get('checkbox1', False)  # Default value if checkbox1 is not present
+        checkbox2 = data.get('checkbox2', False)
+        checkbox3 = data.get('checkbox3', False)
+        checkbox4 = data.get('checkbox4', False)
+        selected_date1 = data.get('selected_date1')
+        selected_date2 = data.get('selected_date2')
+        selected_date3 = data.get('selected_date3')
+        selected_date4 = data.get('selected_date4')
+        patient_id = data.get('patient_id')  # Extract patient_id
 
-            prosthesis_type = data.get('prosthesis_type')
-            checkbox1 = data.get('checkbox1', False)  # Default value if checkbox1 is not present
-            checkbox2 = data.get('checkbox2', False)
-            checkbox3 = data.get('checkbox3', False)
-            checkbox4 = data.get('checkbox4', False)
+        # Validate patient_id
+        if not db.Patient.find_one({"_id": ObjectId(patient_id)}):
+            return jsonify(status="error", message="Patient not found"), 404
 
-            selected_date1 = data.get('selected_date1')
-            selected_date2 = data.get('selected_date2')
-            selected_date3 = data.get('selected_date3')
-            selected_date4 = data.get('selected_date4')
+        # Insert data into MongoDB
+        db.Prostheses.insert_one({
+            "patient_id": patient_id,
+            "name": prosthesis_type,
+            "lab": checkbox1,
+            "arrival": checkbox2,
+            "resent": checkbox3,
+            "delivered": checkbox4,
+            "selected_date1": selected_date1,
+            "selected_date2": selected_date2,
+            "selected_date3": selected_date3,
+            "selected_date4": selected_date4
+        })
 
-            # Perform necessary conversions and validations here
+        return jsonify(status="success", message="Dental Prosthesis Added successfully")
+    else:
+        return jsonify(status="error", message="No data received"), 400  # Bad Request
 
-            # Insert data into MongoDB
-            db.Prostheses.insert_one({
-                "name": prosthesis_type,
-                "lab": checkbox1,
-                "arrival": checkbox2,
-                "resent": checkbox3,
-                "delivered": checkbox4,
-                "selected_date1": selected_date1,
-                "selected_date2": selected_date2,
-                "selected_date3": selected_date3,
-                "selected_date4": selected_date4
-            })
+
+# @app.route("/add_Prosthesis", methods=["POST"])
+# def prosthesis():
+#         data = request.json  # Access JSON data sent from frontend
+#         if data:
+
+#             prosthesis_type = data.get('prosthesis_type')
+#             checkbox1 = data.get('checkbox1', False)  # Default value if checkbox1 is not present
+#             checkbox2 = data.get('checkbox2', False)
+#             checkbox3 = data.get('checkbox3', False)
+#             checkbox4 = data.get('checkbox4', False)
+
+#             selected_date1 = data.get('selected_date1')
+#             selected_date2 = data.get('selected_date2')
+#             selected_date3 = data.get('selected_date3')
+#             selected_date4 = data.get('selected_date4')
+
+#             # Perform necessary conversions and validations here
+
+#             # Insert data into MongoDB
+#             db.Prostheses.insert_one({
+#                 "name": prosthesis_type,
+#                 "lab": checkbox1,
+#                 "arrival": checkbox2,
+#                 "resent": checkbox3,
+#                 "delivered": checkbox4,
+#                 "selected_date1": selected_date1,
+#                 "selected_date2": selected_date2,
+#                 "selected_date3": selected_date3,
+#                 "selected_date4": selected_date4
+#             })
         
-            return jsonify(status="success", message="Dental Prosthesis Added successfully")
-        else:
-            return jsonify(status="error", message="No data received"), 400 #Bad Request
+#             return jsonify(status="success", message="Dental Prosthesis Added successfully")
+#         else:
+#             return jsonify(status="error", message="No data received"), 400 #Bad Request
 
 
 @app.route("/delete_Prosthesis/<id>", methods = ["DELETE"])
