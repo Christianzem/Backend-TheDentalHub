@@ -26,6 +26,11 @@ Frontend Heroku Link: https://thedentalhub-frontend-76d158ed88fa.herokuapp.com/ 
 Trello Link: https://trello.com/b/JWIhHd7s/capstone-project </br>
 Frontend Repo: https://github.com/Christianzem/Frontend-TheDentalHub </br>
 
+## Relevant Sources 
+> Flask Documentation 
+> Code with Prince - Flask MongoDB Todo App Tutorial (Youtube Channel/Video Series)
+> ChatGPT
+
 
 ## Future Features
 
